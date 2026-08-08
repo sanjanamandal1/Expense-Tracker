@@ -179,7 +179,13 @@ npm install
 npm run dev
 ```
 
-The frontend starts on **http://localhost:5173**.
+### 4. Run with Docker Compose (Optional)
+
+```bash
+docker compose up --build -d
+```
+
+For complete cloud deployment instructions (Render, Vercel, Railway, Docker), refer to [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Categories
 
@@ -200,4 +206,4 @@ The frontend starts on **http://localhost:5173**.
 - Search by description
 - Pagination
 - Unit and integration tests
-- Docker support
+
