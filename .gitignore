@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build & Compiled Output
+target/
+dist/
+build/
+*.class
+
+# Logs & Temp
+*.log
+*.tmp
+*.temp
+*.swp
+*.bak
+
+# Environment & Credentials
+.env
+.env.local
+.env.*.local
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Maven Wrapper binaries (keep script wrapper files in repository)
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
