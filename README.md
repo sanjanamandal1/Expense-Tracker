@@ -2,6 +2,11 @@
 
 A simple full-stack expense tracker application built with **React**, **Spring Boot**, and **MySQL**.
 
+## 🌐 Live Demo
+
+- **Frontend Web Application:** [https://expense-tracker-navy-one-12.vercel.app/](https://expense-tracker-navy-one-12.vercel.app/)
+- **Backend REST API:** [https://expense-tracker-production-fea6.up.railway.app/api/expenses/summary](https://expense-tracker-production-fea6.up.railway.app/api/expenses/summary)
+
 ## Features
 
 - Add, edit, and delete expenses
