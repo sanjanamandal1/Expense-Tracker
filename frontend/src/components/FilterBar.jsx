@@ -51,17 +51,29 @@ function FilterBar({ filters, onFilterChange, onReset, onExportCsv }) {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="filterSort">Sort By</label>
+          <label htmlFor="filterSortDate">Sort by Date</label>
           <select
-            id="filterSort"
-            name="sortBy"
-            value={filters.sortBy || 'date-desc'}
+            id="filterSortDate"
+            name="sortDate"
+            value={filters.sortDate || 'date-desc'}
             onChange={handleChange}
           >
-            <option value="date-desc">Date (Newest First)</option>
-            <option value="date-asc">Date (Oldest First)</option>
-            <option value="amount-desc">Amount (High to Low)</option>
-            <option value="amount-asc">Amount (Low to High)</option>
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="filterSortAmount">Sort by Amount</label>
+          <select
+            id="filterSortAmount"
+            name="sortAmount"
+            value={filters.sortAmount || 'none'}
+            onChange={handleChange}
+          >
+            <option value="none">None (Default)</option>
+            <option value="amount-desc">High to Low</option>
+            <option value="amount-asc">Low to High</option>
           </select>
         </div>
 

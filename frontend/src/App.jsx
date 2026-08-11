@@ -14,7 +14,8 @@ function App() {
     category: '',
     month: '',
     search: '',
-    sortBy: 'date-desc',
+    sortDate: 'date-desc',
+    sortAmount: 'none',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -113,7 +114,13 @@ function App() {
   };
 
   const handleResetFilters = () => {
-    setFilters({ category: '', month: '', search: '', sortBy: 'date-desc' });
+    setFilters({
+      category: '',
+      month: '',
+      search: '',
+      sortDate: 'date-desc',
+      sortAmount: 'none',
+    });
   };
 
   // Process Search & Sorting client-side for dynamic reactivity
@@ -128,23 +135,23 @@ function App() {
       );
     }
 
-    // Apply Sorting
+    // Apply Sorting (Sort by Amount takes priority if explicitly set, otherwise Sort by Date)
     result.sort((a, b) => {
-      if (filters.sortBy === 'date-asc') {
-        return new Date(a.expenseDate) - new Date(b.expenseDate);
-      }
-      if (filters.sortBy === 'amount-desc') {
+      if (filters.sortAmount === 'amount-desc') {
         return parseFloat(b.amount) - parseFloat(a.amount);
       }
-      if (filters.sortBy === 'amount-asc') {
+      if (filters.sortAmount === 'amount-asc') {
         return parseFloat(a.amount) - parseFloat(b.amount);
+      }
+      if (filters.sortDate === 'date-asc') {
+        return new Date(a.expenseDate) - new Date(b.expenseDate);
       }
       // Default: date-desc
       return new Date(b.expenseDate) - new Date(a.expenseDate);
     });
 
     return result;
-  }, [expenses, filters.search, filters.sortBy]);
+  }, [expenses, filters.search, filters.sortDate, filters.sortAmount]);
 
   // Export visible filtered expenses as CSV
   const handleExportCsv = () => {
