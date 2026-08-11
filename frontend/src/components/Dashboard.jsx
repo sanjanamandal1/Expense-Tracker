@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react';
 import expenseService from '../services/expenseService';
 
+const CATEGORY_CLASSES = {
+  FOOD: 'cat-food',
+  TRAVEL: 'cat-travel',
+  SHOPPING: 'cat-shopping',
+  BILLS: 'cat-bills',
+  ENTERTAINMENT: 'cat-entertainment',
+  HEALTH: 'cat-health',
+  OTHER: 'cat-other',
+};
+
 function Dashboard({ onNavigate }) {
   const [summary, setSummary] = useState({
     totalExpenses: 0,
@@ -94,7 +104,11 @@ function Dashboard({ onNavigate }) {
             <tbody>
               {categoryEntries.map(([cat, amount]) => (
                 <tr key={cat}>
-                  <td>{cat}</td>
+                  <td>
+                    <span className={`category-badge ${CATEGORY_CLASSES[cat] || 'cat-other'}`}>
+                      {cat}
+                    </span>
+                  </td>
                   <td className="amount">{formatAmount(amount)}</td>
                 </tr>
               ))}
@@ -106,7 +120,10 @@ function Dashboard({ onNavigate }) {
       <div className="recent-expenses">
         <h3>Recent Expenses</h3>
         {recentExpenses.length === 0 ? (
-          <p className="no-data">No expenses yet. Add your first expense!</p>
+          <div className="empty-state">
+            <span>💸</span>
+            <p>No expenses yet. Add your first one!</p>
+          </div>
         ) : (
           <table className="expense-table">
             <thead>
@@ -121,8 +138,12 @@ function Dashboard({ onNavigate }) {
               {recentExpenses.map((expense) => (
                 <tr key={expense.id}>
                   <td>{formatDate(expense.expenseDate)}</td>
-                  <td>{expense.category}</td>
-                  <td>{expense.description}</td>
+                  <td>
+                    <span className={`category-badge ${CATEGORY_CLASSES[expense.category] || 'cat-other'}`}>
+                      {expense.category}
+                    </span>
+                  </td>
+                  <td>{expense.description || <span style={{ color: '#bbb' }}>—</span>}</td>
                   <td className="amount">{formatAmount(expense.amount)}</td>
                 </tr>
               ))}

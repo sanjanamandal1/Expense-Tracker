@@ -1,3 +1,13 @@
+const CATEGORY_CLASSES = {
+  FOOD: 'cat-food',
+  TRAVEL: 'cat-travel',
+  SHOPPING: 'cat-shopping',
+  BILLS: 'cat-bills',
+  ENTERTAINMENT: 'cat-entertainment',
+  HEALTH: 'cat-health',
+  OTHER: 'cat-other',
+};
+
 function ExpenseItem({ expense, onEdit, onDelete }) {
   const formatAmount = (amount) => {
     return new Intl.NumberFormat('en-IN', {
@@ -22,11 +32,17 @@ function ExpenseItem({ expense, onEdit, onDelete }) {
     }
   };
 
+  const catClass = CATEGORY_CLASSES[expense.category] || 'cat-other';
+
   return (
     <tr>
       <td>{formatDate(expense.expenseDate)}</td>
-      <td>{expense.category}</td>
-      <td>{expense.description}</td>
+      <td>
+        <span className={`category-badge ${catClass}`}>
+          {expense.category}
+        </span>
+      </td>
+      <td>{expense.description || <span style={{ color: '#bbb' }}>—</span>}</td>
       <td className="amount">{formatAmount(expense.amount)}</td>
       <td className="actions">
         <button className="btn btn-sm btn-edit" onClick={() => onEdit(expense)}>

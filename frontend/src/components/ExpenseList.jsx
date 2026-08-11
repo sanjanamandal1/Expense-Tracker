@@ -17,7 +17,10 @@ function ExpenseList({ expenses, onEdit, onDelete, totalAmount }) {
       </div>
 
       {expenses.length === 0 ? (
-        <p className="no-data">No expenses found.</p>
+        <div className="empty-state">
+          <span>🗂️</span>
+          <p>No expenses match your filters.</p>
+        </div>
       ) : (
         <div className="table-wrapper">
           <table className="expense-table">
