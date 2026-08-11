@@ -6,6 +6,7 @@ import com.example.expensetracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -79,10 +80,29 @@ public class ExpenseService {
                 .map(Expense::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        BigDecimal highestExpense = allExpenses.stream()
+                .map(Expense::getAmount)
+                .max(BigDecimal::compareTo)
+                .orElse(BigDecimal.ZERO);
+
+        BigDecimal averageExpense = allExpenses.isEmpty() ? BigDecimal.ZERO :
+                totalExpenses.divide(BigDecimal.valueOf(allExpenses.size()), 2, RoundingMode.HALF_UP);
+
+        Map<String, BigDecimal> categoryExpenses = new HashMap<>();
+        for (Expense e : allExpenses) {
+            categoryExpenses.put(
+                e.getCategory(),
+                categoryExpenses.getOrDefault(e.getCategory(), BigDecimal.ZERO).add(e.getAmount())
+            );
+        }
+
         Map<String, Object> summary = new HashMap<>();
         summary.put("totalExpenses", totalExpenses);
         summary.put("monthlyExpenses", monthlyExpenses);
         summary.put("numberOfExpenses", allExpenses.size());
+        summary.put("highestExpense", highestExpense);
+        summary.put("averageExpense", averageExpense);
+        summary.put("categoryExpenses", categoryExpenses);
 
         return summary;
     }

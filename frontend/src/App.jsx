@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Dashboard from './components/Dashboard';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
@@ -10,7 +10,12 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [expenses, setExpenses] = useState([]);
   const [editingExpense, setEditingExpense] = useState(null);
-  const [filters, setFilters] = useState({ category: '', month: '' });
+  const [filters, setFilters] = useState({
+    category: '',
+    month: '',
+    search: '',
+    sortBy: 'date-desc',
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -45,7 +50,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters.category, filters.month]);
 
   useEffect(() => {
     if (activeTab === 'expenses') {
@@ -108,10 +113,65 @@ function App() {
   };
 
   const handleResetFilters = () => {
-    setFilters({ category: '', month: '' });
+    setFilters({ category: '', month: '', search: '', sortBy: 'date-desc' });
   };
 
-  const totalAmount = expenses.reduce(
+  // Process Search & Sorting client-side for dynamic reactivity
+  const processedExpenses = useMemo(() => {
+    let result = [...expenses];
+
+    // Filter by description keyword
+    if (filters.search && filters.search.trim() !== '') {
+      const keyword = filters.search.toLowerCase().trim();
+      result = result.filter((e) =>
+        (e.description || '').toLowerCase().includes(keyword)
+      );
+    }
+
+    // Apply Sorting
+    result.sort((a, b) => {
+      if (filters.sortBy === 'date-asc') {
+        return new Date(a.expenseDate) - new Date(b.expenseDate);
+      }
+      if (filters.sortBy === 'amount-desc') {
+        return parseFloat(b.amount) - parseFloat(a.amount);
+      }
+      if (filters.sortBy === 'amount-asc') {
+        return parseFloat(a.amount) - parseFloat(b.amount);
+      }
+      // Default: date-desc
+      return new Date(b.expenseDate) - new Date(a.expenseDate);
+    });
+
+    return result;
+  }, [expenses, filters.search, filters.sortBy]);
+
+  // Export visible filtered expenses as CSV
+  const handleExportCsv = () => {
+    if (processedExpenses.length === 0) {
+      alert('No expenses to export');
+      return;
+    }
+    const headers = ['ID', 'Date', 'Category', 'Description', 'Amount'];
+    const rows = processedExpenses.map((e) => [
+      e.id,
+      e.expenseDate,
+      `"${e.category}"`,
+      `"${(e.description || '').replace(/"/g, '""')}"`,
+      e.amount,
+    ]);
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `expenses_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const totalAmount = processedExpenses.reduce(
     (sum, expense) => sum + parseFloat(expense.amount),
     0
   );
@@ -155,13 +215,14 @@ function App() {
               filters={filters}
               onFilterChange={handleFilterChange}
               onReset={handleResetFilters}
+              onExportCsv={handleExportCsv}
             />
 
             {loading ? (
               <p className="loading">Loading expenses...</p>
             ) : (
               <ExpenseList
-                expenses={expenses}
+                expenses={processedExpenses}
                 onEdit={handleEdit}
                 onDelete={handleDeleteExpense}
                 totalAmount={totalAmount}

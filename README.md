@@ -9,13 +9,19 @@ A simple full-stack expense tracker application built with **React**, **Spring B
 
 ## Features
 
-- Add, edit, and delete expenses
-- Categorize expenses (Food, Travel, Shopping, Bills, Entertainment, Health, Other)
-- Filter expenses by category and month
-- Dashboard with total spending, monthly spending, and expense count
-- View recent expenses
-- Form validation
-- Error handling
+- **CRUD Operations:** Add, edit, and delete expenses with validation.
+- **Categorization:** Categorize expenses (Food, Travel, Shopping, Bills, Entertainment, Health, Other).
+- **Search & Filter:** Search expenses by description keywords, or filter by category and month.
+- **Sorting:** Sort expenses by Date (Newest/Oldest) or Amount (Highest/Lowest).
+- **Export to CSV:** One-click CSV spreadsheet export of filtered expenses.
+- **Analytics Dashboard:**
+  - Total Spending
+  - Current Month Spending
+  - Expense Counter
+  - Highest Single Expense
+  - Average Expense Amount
+  - Category Breakdown Table (spending per category)
+  - 5 Recent Transactions Table
 
 ## Tech Stack
 
@@ -105,35 +111,23 @@ src/
 | DELETE | `/api/expenses/{id}`              | Delete expense          |
 | GET    | `/api/expenses/category/{name}`   | Filter by category      |
 | GET    | `/api/expenses/filter`            | Filter by category/date |
-| GET    | `/api/expenses/summary`           | Dashboard summary       |
+| GET    | `/api/expenses/summary`           | Analytics summary       |
 
-### Filter Parameters
-
-```
-GET /api/expenses/filter?category=FOOD&startDate=2026-08-01&endDate=2026-08-31
-```
-
-### Example Request Body (POST / PUT)
+### Example Summary Response
 
 ```json
 {
-  "amount": 500,
-  "category": "FOOD",
-  "description": "Lunch",
-  "expenseDate": "2026-08-08"
-}
-```
-
-### Example Error Response
-
-```json
-{
-  "timestamp": "2026-08-08T12:00:00",
-  "status": 400,
-  "error": "Validation Failed",
-  "messages": {
-    "amount": "Amount must be greater than 0",
-    "category": "Category is required"
+  "totalExpenses": 4700.00,
+  "monthlyExpenses": 4700.00,
+  "numberOfExpenses": 5,
+  "highestExpense": 2000.00,
+  "averageExpense": 940.00,
+  "categoryExpenses": {
+    "FOOD": 550.00,
+    "TRAVEL": 150.00,
+    "SHOPPING": 2000.00,
+    "BILLS": 800.00,
+    "HEALTH": 1200.00
   }
 }
 ```
@@ -170,12 +164,6 @@ cd backend
 
 The backend starts on **http://localhost:8080**.
 
-On Windows, use `mvnw.cmd` instead:
-
-```bash
-mvnw.cmd spring-boot:run
-```
-
 ### 3. Run Frontend
 
 ```bash
@@ -205,10 +193,7 @@ For complete cloud deployment instructions (Render, Vercel, Railway, Docker), re
 ## Future Improvements
 
 - User authentication (JWT)
-- Export expenses to CSV/PDF
-- Monthly/category-wise charts
+- Graphical charts (Recharts / Chart.js)
 - Budget limits and alerts
-- Search by description
 - Pagination
 - Unit and integration tests
-
